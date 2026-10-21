@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic AI Customer Support & Refund Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(229, 231, 235, 0.8); }
+    .chat-bubble-user { background: linear-gradient(135deg, #4f46e5, #3b82f6); color: white; border-radius: 18px 18px 2px 18px; }
+    .chat-bubble-agent { background: #f3f4f6; color: #1f2937; border-radius: 18px 18px 18px 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col">
+
+  <!-- Header / Navigation -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-xl shadow-lg shadow-indigo-500/30">
+          <i class="fa-solid fa-robot text-white"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight">LangGraph Support Agent</h1>
+          <p class="text-xs text-slate-400">Autonomous Refund & Dispute Resolution Engine</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> FastAPI Online
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Left Column: Customer Support Chat Interface -->
+    <section class="lg:col-span-7 flex flex-col h-[750px] glass-card rounded-2xl shadow-xl overflow-hidden border border-slate-200">
+      
+      <!-- Chat Header -->
+      <div class="bg-white px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+        <div>
+          <h2 class="font-semibold text-slate-900">Customer Support Chat</h2>
+          <p class="text-xs text-slate-500">Ask questions, check orders, or request refunds</p>
+        </div>
+        <button onclick="clearChat()" class="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-lg transition">
+          <i class="fa-solid fa-rotate-right"></i> Reset Thread
+        </button>
+      </div>
+
+      <!-- Messages Area -->
+      <div id="chatMessages" class="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-50/50">
+        <!-- Default Welcome Message -->
+        <div class="flex items-start space-x-3">
+          <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+            AI
+          </div>
+          <div class="chat-bubble-agent px-4 py-3 max-w-[80%] shadow-sm">
+            <p class="text-sm">Hello! How can I help you with your order today? Please mention your Order ID (e.g., <strong>ORD-1001</strong> or <strong>ORD-1004</strong>) if you need a refund or tracking update.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing Indicator (Hidden by default) -->
+      <div id="typingIndicator" class="hidden px-6 py-2 text-xs text-slate-500 flex items-center space-x-2">
+        <i class="fa-solid fa-circle-notch fa-spin text-indigo-600"></i>
+        <span>LangGraph Agent is thinking and checking policies...</span>
+      </div>
+
+      <!-- Input Bar -->
+      <div class="p-4 bg-white border-t border-slate-100">
+        <form id="chatForm" onsubmit="handleUserSubmit(event)" class="flex gap-2">
+          <input type="text" id="userInput" placeholder="e.g., Please refund order ORD-1001" required
+            class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition">
+          <button type="submit" id="sendBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium text-sm shadow-lg shadow-indigo-600/20 transition flex items-center gap-2">
+            <span>Send</span> <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Right Column: Admin Human-in-the-Loop & Execution Dashboard -->
+    <section class="lg:col-span-5 flex flex-col space-y-6">
+      
+      <!-- Human-in-the-Loop Review Box -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl border border-amber-200/60 bg-amber-50/30">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <div>
+            <h3 class="font-semibold text-slate-900">Human-in-the-Loop Portal</h3>
+            <p class="text-xs text-slate-500">Requires manager approval for high-value (> $100) refunds</p>
+          </div>
+        </div>
+
+        <div id="reviewBox" class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
+          <div class="text-center py-6 text-slate-400 text-sm">
+            <i class="fa-solid fa-clock-rotate-left text-2xl mb-2 text-slate-300"></i>
+            <p>No pending human reviews at the moment.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graph Status / Execution Flow Tracker -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl border border-slate-200 flex-1 flex flex-col">
+        <h3 class="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-network-wired text-indigo-600"></i> Agent State Inspector
+        </h3>
+        <p class="text-xs text-slate-500 mb-4">Real-time telemetry of the LangGraph execution pipeline</p>
+
+        <div id="stateInspector" class="bg-slate-900 text-slate-200 font-mono text-xs rounded-xl p-4 flex-1 overflow-y-auto space-y-2 border border-slate-800">
+          <p class="text-slate-500">// System ready. Send a message to inspect the LangGraph State machine.</p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    // Utility for UUID thread ID generation
+    let currentThreadId = 'thread_' + Math.random().toString(36).substring(2, 9);
+
+    function clearChat() {
+      currentThreadId = 'thread_' + Math.random().toString(36).substring(2, 9);
+      document.getElementById('chatMessages').innerHTML = `
+        <div class="flex items-start space-x-3">
+          <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">AI</div>
+          <div class="chat-bubble-agent px-4 py-3 max-w-[80%] shadow-sm">
+            <p class="text-sm">Thread reset! How can I help you with your order? (Try mentioning <strong>ORD-1001</strong> for auto-refund or <strong>ORD-1004</strong> for high value review).</p>
+          </div>
+        </div>
+      `;
+      document.getElementById('reviewBox').innerHTML = `
+        <div class="text-center py-6 text-slate-400 text-sm">
+          <i class="fa-solid fa-clock-rotate-left text-2xl mb-2 text-slate-300"></i>
+          <p>No pending human reviews at the moment.</p>
+        </div>
+      `;
+      document.getElementById('stateInspector').innerHTML = '<p class="text-slate-500">// Thread reset. Awaiting new request...</p>';
+    }
+
+    async function handleUserSubmit(event) {
+      event.preventDefault();
+      const input = document.getElementById('userInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      // Render User Message
+      appendMessage('user', message);
+      input.value = '';
+
+      // Show typing status
+      document.getElementById('typingIndicator').classList.remove('hidden');
+
+      try {
+        const response = await fetch('/support', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: message, thread_id: currentThreadId })
+        });
+
+        const data = await response.json();
+        document.getElementById('typingIndicator').classList.add('hidden');
+
+        // Update State Inspector
+        updateStateInspector(data);
+
+        if (data.status === 'awaiting_approval') {
+          appendMessage('agent', "Your refund request exceeds $100 and has been flagged for human review. A manager is reviewing it now.");
+          renderReviewControls(data);
+        } else if (data.response) {
+          appendMessage('agent', data.response);
+        } else {
+          appendMessage('agent', 'Request processed. Status: ' + data.status);
+        }
+      } catch (err) {
+        document.getElementById('typingIndicator').classList.add('hidden');
+        appendMessage('agent', 'Error connecting to the backend agent server.');
+        console.error(err);
+      }
+    }
+
+    function appendMessage(sender, text) {
+      const messagesContainer = document.getElementById('chatMessages');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = sender === 'user' ? 'flex justify-end' : 'flex items-start space-x-3';
+
+      if (sender === 'user') {
+        msgDiv.innerHTML = `<div class="chat-bubble-user px-4 py-3 max-w-[80%] shadow-md"><p class="text-sm">${text}</p></div>`;
+      } else {
+        msgDiv.innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">AI</div>
+          <div class="chat-bubble-agent px-4 py-3 max-w-[80%] shadow-sm"><p class="text-sm">${text}</p></div>
+        `;
+      }
+      messagesContainer.appendChild(msgDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function renderReviewControls(data) {
+      const reviewBox = document.getElementById('reviewBox');
+      const interruptData = data.interrupts[0] || {};
+      
+      reviewBox.innerHTML = `
+        <div class="space-y-3">
+          <div class="flex justify-between items-center text-xs text-slate-500 border-b pb-2">
+            <span>Thread ID: <strong class="text-slate-800">${data.thread_id}</strong></span>
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-700 font-semibold">Action Required</span>
+          </div>
+          <div class="text-sm text-slate-700">
+            <p><strong>Order ID:</strong> ${interruptData.order_id || 'N/A'}</p>
+            <p><strong>Amount:</strong> $${interruptData.amount || 'N/A'}</p>
+            <p class="text-xs text-slate-500 mt-1">"${interruptData.message || ''}"</p>
+          </div>
+          <div class="flex gap-2 pt-2">
+            <button onclick="submitReview(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-semibold shadow transition">
+              <i class="fa-solid fa-check mr-1"></i> Approve Refund
+            </button>
+            <button onclick="submitReview(false)" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-2 rounded-lg text-xs font-semibold shadow transition">
+              <i class="fa-solid fa-xmark mr-1"></i> Reject Refund
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function submitReview(approved) {
+      try {
+        const response = await fetch(`/review/${currentThreadId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ approved: approved })
+        });
+        const data = await response.json();
+        
+        // Reset review box
+        document.getElementById('reviewBox').innerHTML = `
+          <div class="text-center py-6 text-slate-400 text-sm">
+            <i class="fa-solid fa-circle-check text-2xl mb-2 text-emerald-500"></i>
+            <p>Decision submitted! Process resumed.</p>
+          </div>
+        `;
+
+        updateStateInspector(data);
+
+        if (data.response) {
+          appendMessage('agent', data.response);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Failed to submit approval review.');
+      }
+    }
+
+    function updateStateInspector(data) {
+      const inspector = document.getElementById('stateInspector');
+      inspector.innerHTML = `<pre class="text-xs text-emerald-400">${JSON.stringify(data, null, 2)}</pre>`;
+    }
+  </script>
+</body>
+</html>
